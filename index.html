@@ -9,12 +9,8 @@
     <title>EQUILIBRIA</title>
     <style>
         :root {
-            --ios-blue: #007AFF;
-            --ios-green: #34C759;
-            --ios-red: #FF3B30;
-            --ios-gray: #8E8E93;
-            --ios-bg: #F2F2F7;
-            --ios-card: #FFFFFF;
+            --ios-blue: #007AFF; --ios-green: #34C759; --ios-red: #FF3B30;
+            --ios-gray: #8E8E93; --ios-bg: #F2F2F7; --ios-card: #FFFFFF;
         }
         @media (prefers-color-scheme: dark) {
             :root { --ios-bg: #000000; --ios-card: #1C1C1E; }
@@ -23,92 +19,120 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
         body { background: var(--ios-bg); padding-top: env(safe-area-inset-top); height: 100vh; overflow: hidden; }
         
-        .view { display: none; height: 100vh; padding: 25px; overflow-y: auto; padding-bottom: 120px; }
+        .view { display: none; height: 100vh; padding: 20px; overflow-y: auto; padding-bottom: 120px; }
         .view.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .card { background: var(--ios-card); border-radius: 18px; padding: 20px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .header { margin: 20px 0; }
-        .header h1 { font-size: 34px; font-weight: 800; letter-spacing: -1px; }
+        /* HEADER & SIDEBAR */
+        .top-nav { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+        .menu-btn { font-size: 28px; cursor: pointer; color: var(--ios-blue); padding: 5px; }
         
-        .budget-big { font-size: 52px; font-weight: 800; color: var(--ios-green); letter-spacing: -2px; margin: 10px 0; }
-        .budget-label { font-size: 11px; text-transform: uppercase; color: var(--ios-gray); font-weight: 700; letter-spacing: 0.5px; }
-        
-        .btn { background: var(--ios-blue); color: white; border: none; padding: 18px; border-radius: 16px; width: 100%; font-size: 17px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-        .btn:active { opacity: 0.7; transform: scale(0.98); }
-        .btn-secondary { background: rgba(142,142,147,0.15); color: var(--ios-blue); }
-        
-        input, select { width: 100%; padding: 16px; margin: 8px 0; border-radius: 12px; border: none; background: rgba(142,142,147,0.1); color: inherit; font-size: 17px; outline: none; }
-        
-        /* Input estilo banco */
-        .currency-input { font-size: 38px !important; font-weight: 800 !important; text-align: center; color: var(--ios-blue); background: transparent !important; border-bottom: 2px solid var(--ios-blue) !important; border-radius: 0 !important; margin: 20px 0 !important; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); z-index: 1000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 60px 20px; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
+        .sidebar.open { left: 0; }
+        .sidebar-item { padding: 18px 0; border-bottom: 0.5px solid rgba(0,0,0,0.1); font-size: 17px; font-weight: 500; color: var(--ios-blue); display: flex; align-items: center; gap: 10px; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: none; z-index: 900; }
 
-        .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 90px; background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); display: none; justify-content: space-around; border-top: 0.5px solid rgba(0,0,0,0.1); padding-bottom: env(safe-area-inset-bottom); }
-        .tab-item { text-align: center; color: var(--ios-gray); font-size: 10px; flex: 1; padding-top: 15px; }
-        .tab-item.active { color: var(--ios-blue); }
-        .tab-icon { font-size: 26px; display: block; margin-bottom: 4px; }
+        /* CARDS & UI */
+        .card { background: var(--ios-card); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .budget-big { font-size: 54px; font-weight: 800; color: var(--ios-green); letter-spacing: -3px; margin: 5px 0; }
+        .label { font-size: 11px; text-transform: uppercase; color: var(--ios-gray); font-weight: 700; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
 
-        #loader { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display:none; justify-content:center; align-items:center; z-index:9999; color: white; font-weight: 600; flex-direction: column; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--ios-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn { background: var(--ios-blue); color: white; border: none; padding: 18px; border-radius: 16px; width: 100%; font-size: 17px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn:active { transform: scale(0.97); opacity: 0.8; }
+        .btn-sec { background: rgba(142,142,147,0.15); color: var(--ios-blue); margin-top: 10px; }
+        
+        /* SELECTORS DINÁMICOS */
+        .selector-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin: 15px 0; }
+        .sel-btn { padding: 12px 5px; border-radius: 12px; border: 2.5px solid transparent; background: rgba(142,142,147,0.1); text-align: center; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; color: var(--ios-gray); }
+        .sel-btn.active { border-color: var(--ios-blue); background: rgba(0,122,255,0.1); color: var(--ios-blue); }
+
+        .currency-input { font-size: 44px !important; font-weight: 800 !important; text-align: center; color: var(--ios-blue); background: transparent !important; border-bottom: 2px solid var(--ios-blue) !important; border-radius: 0 !important; width: 100%; outline: none; border: none; margin: 15px 0; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 15px; border-radius: 12px; border: none; background: rgba(0,0,0,0.05); font-size: 16px; margin-bottom: 10px; outline: none; }
+
+        #loader { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display:none; justify-content:center; align-items:center; z-index:2000; color: white; font-weight: 600; flex-direction: column; }
     </style>
 </head>
 <body>
 
-    <div id="loader"><div class="spinner"></div>Sincronizando...</div>
+    <div id="loader">Sincronizando...</div>
+    <div class="sidebar-overlay" id="overlay" onclick="app.toggleMenu()"></div>
+    
+    <div class="sidebar" id="sidebar">
+        <h2 style="margin-bottom: 30px; font-weight: 800; letter-spacing: -1px;">EQUILIBRIA</h2>
+        <div class="sidebar-item" onclick="app.showView('view-main'); app.toggleMenu();">📊 Dashboard Principal</div>
+        <div class="sidebar-item" onclick="app.showView('view-metodos'); app.toggleMenu();">💳 Medios de Pago</div>
+        <div class="sidebar-item" onclick="app.logout()" style="color: var(--ios-red); margin-top: 50px;">🚪 Cerrar Sesión</div>
+    </div>
 
     <div id="view-login" class="view active">
-        <div class="header"><h1>Equilibria</h1><p>Control financiero de élite.</p></div>
+        <div class="header" style="margin-top: 50px;"><h1>Equilibria</h1><p>Arquitectura de Ahorro.</p></div>
         <div class="card">
             <input type="email" id="l-email" placeholder="Correo electrónico">
-            <input type="password" id="l-pass" placeholder="Contraseña">
-            <button class="btn" onclick="app.login()">Iniciar Sesión</button>
-            <button class="btn btn-secondary" onclick="app.showView('view-reg')">Crear Nueva Cuenta</button>
-        </div>
-    </div>
-
-    <div id="view-reg" class="view">
-        <div class="header"><h1>Registro</h1><p>Paso 1 de 2</p></div>
-        <div class="card">
-            <input type="text" id="r-nom" placeholder="Tu Nombre">
-            <input type="email" id="r-em" placeholder="Correo electrónico">
-            <input type="password" id="r-pw" placeholder="Crea una contraseña">
-            <button class="btn" onclick="app.register()">Siguiente</button>
-            <button class="btn btn-secondary" onclick="app.showView('view-login')">Volver</button>
-        </div>
-    </div>
-
-    <div id="view-onboarding" class="view">
-        <div class="header"><h1>Configuración</h1><p>Define tus parámetros de ahorro.</p></div>
-        <div class="card">
-            <label class="budget-label">Día de Pago Mensual (1-31):</label>
-            <input type="number" id="o-corte" placeholder="Ej: 15" min="1" max="31">
-            <label class="budget-label">Ingreso Mensual Total ($):</label>
-            <input type="text" id="o-ingreso" class="currency-input" placeholder="0.00" oninput="app.mask(this)">
-            <label class="budget-label">Meta de Ahorro Mensual ($):</label>
-            <input type="text" id="o-ahorro" class="currency-input" placeholder="0.00" oninput="app.mask(this)">
-            <button class="btn" onclick="app.completeReg()">Guardar y Finalizar</button>
+            <button class="btn" onclick="app.login()">Entrar a mi Bóveda</button>
         </div>
     </div>
 
     <div id="view-main" class="view">
-        <div class="header">
-            <p id="w-msg">Bienvenido</p>
-            <h1 id="t-date">--</h1>
+        <div class="top-nav">
+            <div class="menu-btn" onclick="app.toggleMenu()">≡</div>
+            <div id="t-date" style="font-weight: 700; font-size: 14px; text-transform: uppercase;">--</div>
+            <div style="width: 35px;"></div>
         </div>
-        <div class="card" style="text-align: center;">
-            <div class="budget-label">Gasto Disponible Hoy</div>
+        
+        <div class="card" style="text-align: center; margin-top: 15px; padding: 30px 20px;">
+            <span class="label">Presupuesto para hoy</span>
             <div id="d-budget" class="budget-big">$0.00</div>
-            <p id="c-info" style="font-size:13px; color:var(--ios-gray); margin-top: 10px;"></p>
+            <div id="c-info" style="font-size: 13px; color: var(--ios-gray); font-weight: 600;"></div>
         </div>
-        <button class="btn" style="height:80px; font-size:22px;" onclick="app.showView('view-gasto')">＋ Registrar Gasto</button>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+            <div class="card" style="margin:0; padding:15px; text-align:center;">
+                <span class="label">Ahorro Meta</span>
+                <div style="font-size:20px; font-weight:800; color:var(--ios-blue);" id="v-savings">$0</div>
+            </div>
+            <div class="card" style="margin:0; padding:15px; text-align:center;">
+                <span class="label">Para Gastar (Mes)</span>
+                <div style="font-size:20px; font-weight:800;" id="v-available">$0</div>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="label">Progreso del Gasto</span>
+                <div id="v-spent" style="font-weight: 800; color: var(--ios-red);">$0</div>
+            </div>
+            <div style="height: 8px; background: rgba(0,0,0,0.05); border-radius: 4px; margin-top: 10px; overflow: hidden;">
+                <div id="p-bar" style="height: 100%; background: var(--ios-red); width: 0%; transition: 0.5s;"></div>
+            </div>
+        </div>
+
+        <button class="btn" style="height: 80px; font-size: 20px;" onclick="app.showView('view-gasto')">＋ Registrar Gasto</button>
+    </div>
+
+    <div id="view-metodos" class="view">
+        <div class="top-nav">
+            <div class="menu-btn" onclick="app.toggleMenu()">≡</div>
+            <h1>Cuentas</h1>
+        </div>
+        <div id="list-metodos"></div>
+        <div class="card">
+            <span class="label">Añadir Medio de Pago</span>
+            <input type="text" id="m-nombre" placeholder="Nombre (ej. Banamex Crédito)">
+            <select id="m-tipo">
+                <option value="💳 Crédito">💳 Crédito</option>
+                <option value="🏦 Débito">🏦 Débito</option>
+                <option value="💵 Efectivo">💵 Efectivo</option>
+            </select>
+            <button class="btn" onclick="app.addMetodo()">Guardar Medio</button>
+        </div>
     </div>
 
     <div id="view-gasto" class="view">
         <div class="header"><h1>Nuevo Gasto</h1></div>
         <div class="card">
-            <label class="budget-label">Monto del gasto:</label>
             <input type="text" id="g-monto" class="currency-input" placeholder="0.00" oninput="app.mask(this)">
+            
+            <span class="label">¿En qué gastaste?</span>
             <select id="g-cat">
                 <option value="🛒 Suministros">🛒 Suministros</option>
                 <option value="🍕 Placeres">🍕 Placeres</option>
@@ -118,15 +142,13 @@
                 <option value="🏥 Salud">🏥 Salud</option>
                 <option value="🌀 Varios">🌀 Varios</option>
             </select>
-            <input type="text" id="g-con" placeholder="¿En qué gastaste?">
-            <button class="btn" onclick="app.saveTrx()">Confirmar Gasto</button>
-            <button class="btn btn-secondary" onclick="app.showView('view-main')">Cancelar</button>
-        </div>
-    </div>
 
-    <div class="tab-bar" id="main-tabs">
-        <div class="tab-item active" onclick="app.showView('view-main')"><span class="tab-icon">📊</span>Hoy</div>
-        <div class="tab-item" onclick="app.logout()"><span class="tab-icon">🚪</span>Salir</div>
+            <span class="label">¿Con qué pagaste?</span>
+            <div id="g-metodos-grid" class="selector-grid"></div>
+
+            <button class="btn" onclick="app.saveTrx()">Confirmar Gasto</button>
+            <button class="btn btn-sec" onclick="app.showView('view-main')">Cancelar</button>
+        </div>
     </div>
 
     <script>
@@ -135,147 +157,130 @@
         const app = {
             user: null,
             data: null,
+            selectedMetodo: null,
 
-            // Máscara de moneda Pro (0.01 -> Recorrido a izquierda)
-            mask: (el) => {
-                let value = el.value.replace(/\D/g, "");
-                if (!value) { el.value = ""; return; }
-                let formatted = (parseInt(value) / 100).toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-                el.value = formatted;
+            toggleMenu: () => {
+                document.getElementById('sidebar').classList.toggle('open');
+                document.getElementById('overlay').style.display = document.getElementById('sidebar').classList.contains('open') ? 'block' : 'none';
             },
 
-            unmask: (val) => {
-                if(!val) return 0;
-                return parseFloat(val.replace(/,/g, ""));
+            showView: (id) => {
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+            },
+
+            mask: (el) => {
+                let v = el.value.replace(/\D/g, "");
+                if (!v) { el.value = ""; return; }
+                el.value = (parseInt(v) / 100).toLocaleString('en-US', { minimumFractionDigits: 2 });
             },
 
             login: async function() {
                 const email = document.getElementById('l-email').value;
-                const pass = document.getElementById('l-pass').value;
-                if(!email) return alert("Ingresa tu correo.");
-                
-                this.toggleLoader(true);
+                if(!email) return;
+                document.getElementById('loader').style.display = 'flex';
                 try {
                     const res = await fetch(`${API_URL}?userId=${email}`);
                     const json = await res.json();
-                    
-                    if(json.success && json.user_info && json.user_info.nombre) {
-                        this.user = { email: email, ...json.user_info };
+                    if(json.success && json.user_info) {
+                        this.user = { email, ...json.user_info };
                         localStorage.setItem('eq_user', JSON.stringify(this.user));
                         this.data = json;
-
-                        // Si el usuario existe pero no ha terminado onboarding
-                        if(!json.user_info.corte || json.user_info.corte === "") {
-                            this.showView('view-onboarding');
-                        } else {
-                            this.render();
-                            this.showView('view-main');
-                        }
-                    } else {
-                        alert("Usuario no encontrado. Crea una cuenta primero.");
-                    }
-                } catch(e) {
-                    alert("Error crítico de conexión. Revisa los permisos de tu Script de Google.");
-                }
-                this.toggleLoader(false);
-            },
-
-            register: async function() {
-                const data = {
-                    action: "registrarUsuario",
-                    email: document.getElementById('r-em').value,
-                    nombre: document.getElementById('r-nom').value,
-                    password: document.getElementById('r-pw').value
-                };
-                if(!data.email || !data.nombre || !data.password) return alert("Llena todos los campos.");
-
-                this.toggleLoader(true);
-                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-                this.toggleLoader(false);
-                alert("Cuenta creada. Ahora inicia sesión para configurar tus metas.");
-                this.showView('view-login');
-            },
-
-            completeReg: async function() {
-                const corte = document.getElementById('o-corte').value;
-                const ingreso = this.unmask(document.getElementById('o-ingreso').value);
-                const ahorro = this.unmask(document.getElementById('o-ahorro').value);
-
-                if(!corte || ingreso <= 0) return alert("Datos de ingresos inválidos.");
-
-                const data = {
-                    action: "completarRegistro",
-                    email: this.user.email,
-                    fechaCorte: corte,
-                    metaAhorro: ahorro,
-                    ingresoMensual: ingreso
-                };
-
-                this.toggleLoader(true);
-                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-                setTimeout(() => { this.login(); }, 2000);
+                        this.render();
+                        this.showView('view-main');
+                    } else { alert("Usuario no encontrado."); }
+                } catch(e) { alert("Error de conexión."); }
+                document.getElementById('loader').style.display = 'none';
             },
 
             render: function() {
                 const info = this.user;
                 const trxs = this.data.transacciones || [];
-                document.getElementById('w-msg').innerText = `Hola, ${info.nombre}`;
-                document.getElementById('t-date').innerText = new Date().toLocaleDateString('es-MX', { day:'numeric', month:'long' });
+                const metodos = this.data.metodos || [];
 
+                document.getElementById('w-msg').innerText = `Hola, ${info.nombre}`;
+                document.getElementById('t-date').innerText = new Date().toLocaleDateString('es-MX', { day:'numeric', month:'short' });
+
+                // Lógica de cálculo (Realidad Inmediata)
                 const hoy = new Date();
                 const diaCorte = parseInt(info.corte);
-                let corteDate = new Date(hoy.getFullYear(), hoy.getMonth(), diaCorte);
-                if(hoy.getDate() >= diaCorte) corteDate.setMonth(corteDate.getMonth() + 1);
+                let corte = new Date(hoy.getFullYear(), hoy.getMonth(), diaCorte);
+                if(hoy.getDate() >= diaCorte) corte.setMonth(corte.getMonth() + 1);
+                const diasRestantes = Math.ceil((corte - hoy) / (1000 * 60 * 60 * 24));
 
-                const diffTime = Math.abs(corteDate - hoy);
-                const diasRestantes = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
-                const totalGastado = trxs.reduce((acc, curr) => acc + parseFloat(curr.monto || 0), 0);
-                const disponiblePeriodo = (parseFloat(info.ingreso) - parseFloat(info.meta)) - totalGastado;
-                const diario = (disponiblePeriodo / diasRestantes).toFixed(2);
+                const gastado = trxs.reduce((a, b) => a + parseFloat(b.monto || 0), 0);
+                const dispMes = parseFloat(info.ingreso) - parseFloat(info.meta);
+                const dispReal = dispMes - gastado;
+                const diario = (dispReal / diasRestantes).toFixed(2);
 
-                const elBudget = document.getElementById('d-budget');
-                elBudget.innerText = `$${parseFloat(diario).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-                elBudget.style.color = diario < 0 ? 'var(--ios-red)' : 'var(--ios-green)';
+                document.getElementById('d-budget').innerText = `$${parseFloat(diario).toLocaleString()}`;
+                document.getElementById('d-budget').style.color = diario < 0 ? 'var(--ios-red)' : 'var(--ios-green)';
+                document.getElementById('v-savings').innerText = `$${parseFloat(info.meta).toLocaleString()}`;
+                document.getElementById('v-available').innerText = `$${dispMes.toLocaleString()}`;
+                document.getElementById('v-spent').innerText = `$${gastado.toLocaleString()}`;
+                document.getElementById('c-info').innerText = `${diasRestantes} días para el corte (${diaCorte})`;
+                document.getElementById('p-bar').style.width = Math.min((gastado / dispMes) * 100, 100) + "%";
+
+                // Render Metodos en Sidebar y Gasto
+                this.renderMetodosUI(metodos);
+            },
+
+            renderMetodosUI: function(metodos) {
+                const grid = document.getElementById('g-metodos-grid');
+                const list = document.getElementById('list-metodos');
                 
-                document.getElementById('c-info').innerText = `${diasRestantes} días restantes para el corte (Día ${info.corte})`;
-                document.getElementById('main-tabs').style.display = 'flex';
+                grid.innerHTML = metodos.map(m => `
+                    <div class="sel-btn" onclick="app.selectMetodo(this, '${m.nombre}')">${m.nombre}</div>
+                `).join('');
+
+                list.innerHTML = metodos.map(m => `
+                    <div class="card" style="padding:15px; display:flex; justify-content:space-between; align-items:center;">
+                        <div><b>${m.nombre}</b><br><small style="color:var(--ios-gray)">${m.tipo}</small></div>
+                        <div style="font-size:20px;">✓</div>
+                    </div>
+                `).join('');
+
+                if(metodos.length === 0) {
+                    grid.innerHTML = `<p style="font-size:12px; color:var(--ios-red); grid-column:1/-1;">⚠️ Ve a "Medios de Pago" para añadir tus tarjetas.</p>`;
+                }
+            },
+
+            selectMetodo: (btn, name) => {
+                document.querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                app.selectedMetodo = name;
+            },
+
+            addMetodo: async function() {
+                const nombre = document.getElementById('m-nombre').value;
+                if(!nombre) return;
+                document.getElementById('loader').style.display = 'flex';
+                await fetch(API_URL, { 
+                    method: 'POST', mode: 'no-cors', 
+                    body: JSON.stringify({ action: "agregarMetodo", userId: this.user.email, nombre: nombre, tipo: document.getElementById('m-tipo').value }) 
+                });
+                document.getElementById('m-nombre').value = "";
+                setTimeout(() => this.login(), 1500);
             },
 
             saveTrx: async function() {
-                const monto = this.unmask(document.getElementById('g-monto').value);
-                if(!monto || monto <= 0) return alert("Ingresa un monto válido.");
+                const monto = parseFloat(document.getElementById('g-monto').value.replace(/,/g, ""));
+                if(!monto || !app.selectedMetodo) return alert("Ingresa monto y selecciona tarjeta.");
 
-                const data = {
-                    action: "registrarTransaccion",
-                    userId: this.user.email,
-                    monto: monto,
-                    categoria: document.getElementById('g-cat').value,
-                    metodo: "Efectivo",
-                    tipo: "Gasto",
-                    concepto: document.getElementById('g-con').value || "Gasto sin concepto"
-                };
-
-                this.toggleLoader(true);
-                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+                document.getElementById('loader').style.display = 'flex';
+                await fetch(API_URL, { 
+                    method: 'POST', mode: 'no-cors', 
+                    body: JSON.stringify({ action: "registrarTransaccion", userId: this.user.email, monto, categoria: document.getElementById('g-cat').value, metodo: app.selectedMetodo, tipo: "Gasto", concepto: "App" }) 
+                });
                 document.getElementById('g-monto').value = "";
-                document.getElementById('g-con').value = "";
-                setTimeout(() => { this.login(); }, 2000);
+                setTimeout(() => this.login(), 1500);
             },
 
-            showView: function(id) {
-                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-            },
-
-            toggleLoader: (s) => document.getElementById('loader').style.display = s ? 'flex' : 'none',
-            logout: () => { localStorage.clear(); location.reload(); }
+            logout: function() {
+                if(confirm("¿Seguro que quieres cerrar sesión?")) { localStorage.clear(); location.reload(); }
+            }
         };
 
-        // Auto-login
         window.onload = () => {
             const saved = localStorage.getItem('eq_user');
             if(saved) {
